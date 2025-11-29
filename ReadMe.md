@@ -222,3 +222,5 @@ To Scale Sharedism For Production Use, The Following Enhancements Are Recommende
 ## 9. License
 
 This Project Is Proprietary Software Developed For **Sharedism**. Unauthorized Copying Or Distribution Is Prohibited.
+
+<img src="/Frontend/img/0.png" />
