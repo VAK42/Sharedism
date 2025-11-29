@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  posts     Post[]    @relation("UserPosts")
+  comments  Comment[] @relation("UserComments")
+}
+
+enum PostStatus {
+  Draft
+  Published
+}
+
+model Post {
+  id        String     @id @default(uuid())
+  title     String
+  content   String
+  status    PostStatus @default(Draft)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  user      User       @relation("UserPosts", fields: [userId], references: [id])
+  userId    String
+  comments  Comment[]  @relation("PostComments")
+  postTags  PostTag[]
+}
+
+model Comment {
+  id        String    @id @default(uuid())
+  content   String
+  createdAt DateTime  @default(now())
+  post      Post      @relation("PostComments", fields: [postId], references: [id])
+  postId    String
+  user      User      @relation("UserComments", fields: [userId], references: [id])
+  userId    String
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId  String?
+  replies   Comment[] @relation("CommentReplies")
+}
+
+model Tag {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  postTags   PostTag[]
+}
+
+model PostTag {
+  postId String
+  tagId  String
+  post   Post     @relation(fields: [postId], references: [id])
+  tag    Tag      @relation(fields: [tagId], references: [id])
+
+  @@id([postId, tagId])
+}
